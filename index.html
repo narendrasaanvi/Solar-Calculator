@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Solar Rooftop Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      max-width: 700px;
+      background: #f9f9f9;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: #2d89ef;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1b5fcc;
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      background: #e8f5e9;
+      border-left: 6px solid #2e7d32;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .result p {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    .result i {
+      margin-right: 10px;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>☀️ Solar Rooftop Calculator (India)</h2>
+
+  <label>Select State:</label>
+  <select id="state">
+    <option value="">-- Select State --</option>
+    <option>Andhra Pradesh</option>
+    <option>Arunachal Pradesh</option>
+    <option>Assam</option>
+    <option>Bihar</option>
+    <option>Chhattisgarh</option>
+    <option>Goa</option>
+    <option>Gujarat</option>
+    <option>Haryana</option>
+    <option>Himachal Pradesh</option>
+    <option>Jharkhand</option>
+    <option>Karnataka</option>
+    <option>Kerala</option>
+    <option>Madhya Pradesh</option>
+    <option>Maharashtra</option>
+    <option>Manipur</option>
+    <option>Meghalaya</option>
+    <option>Mizoram</option>
+    <option>Nagaland</option>
+    <option>Odisha</option>
+    <option>Punjab</option>
+    <option>Rajasthan</option>
+    <option>Sikkim</option>
+    <option>Tamil Nadu</option>
+    <option>Telangana</option>
+    <option>Tripura</option>
+    <option>Uttar Pradesh</option>
+    <option>Uttarakhand</option>
+    <option>West Bengal</option>
+    <option>Andaman and Nicobar Islands</option>
+    <option>Chandigarh</option>
+    <option>Dadra and Nagar Haveli and Daman and Diu</option>
+    <option>Delhi</option>
+    <option>Lakshadweep</option>
+    <option>Puducherry</option>
+    <option>Ladakh</option>
+    <option>Jammu and Kashmir</option>
+  </select>
+
+  <label>Rooftop Area (sq. meters):</label>
+  <input type="number" id="area" placeholder="e.g., 100">
+
+  <label>Panel Efficiency (%):</label>
+  <input type="number" id="efficiency" placeholder="e.g., 18" value="18">
+
+  <label>Avg Sunlight Hours per Day:</label>
+  <input type="number" id="sunlight" placeholder="e.g., 5" value="5">
+
+  <label>Electricity Rate (₹ per kWh):</label>
+  <input type="number" id="rate" placeholder="e.g., 6" value="6">
+
+  <label>Installation Cost per kW (₹):</label>
+  <input type="number" id="costPerKW" placeholder="e.g., 60000" value="60000">
+
+  <button onclick="calculateSolar()"><i class="fas fa-calculator"></i> Calculate</button>
+
+  <div class="result" id="output" style="display: none;"></div>
+
+  <script>
+    function calculateSolar() {
+      const area = parseFloat(document.getElementById('area').value);
+      const efficiency = parseFloat(document.getElementById('efficiency').value) / 100;
+      const sunlight = parseFloat(document.getElementById('sunlight').value);
+      const rate = parseFloat(document.getElementById('rate').value);
+      const costPerKW = parseFloat(document.getElementById('costPerKW').value);
+      const state = document.getElementById('state').value;
+
+      if (!area || !efficiency || !sunlight || !rate || !costPerKW || !state) {
+        alert('Please fill all fields including selecting a state.');
+        return;
+      }
+
+      const systemSizeKW = area * efficiency * 0.1; // Assuming 10 sq.m = 1kW at 100%
+      const monthlyGeneration = systemSizeKW * sunlight * 30;
+      const monthlySavings = monthlyGeneration * rate;
+      const systemCost = systemSizeKW * costPerKW;
+      const paybackPeriod = systemCost / (monthlySavings * 12);
+
+      const output = `
+        <p><i class="fas fa-map-marker-alt"></i><strong>State:</strong> ${state}</p>
+        <p><i class="fas fa-solar-panel"></i><strong>System Size:</strong> ${systemSizeKW.toFixed(2)} kW</p>
+        <p><i class="fas fa-bolt"></i><strong>Monthly Generation:</strong> ${monthlyGeneration.toFixed(0)} kWh</p>
+        <p><i class="fas fa-rupee-sign"></i><strong>Monthly Savings:</strong> ₹${monthlySavings.toFixed(0)}</p>
+        <p><i class="fas fa-wallet"></i><strong>Estimated Cost:</strong> ₹${systemCost.toFixed(0)}</p>
+        <p><i class="fas fa-hourglass-half"></i><strong>Payback Period:</strong> ${paybackPeriod.toFixed(1)} years</p>
+      `;
+
+      const outputDiv = document.getElementById('output');
+      outputDiv.innerHTML = output;
+      outputDiv.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
