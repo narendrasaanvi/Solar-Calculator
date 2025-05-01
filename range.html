@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Solar Rooftop Calculator with Sliders</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      max-width: 700px;
+      background: #f9f9f9;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    select, input[type="range"] {
+      margin-top: 5px;
+    }
+
+    .value {
+      font-weight: normal;
+      margin-left: 10px;
+      color: #333;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 12px 24px;
+      background: #2d89ef;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      background: #e8f5e9;
+      border-left: 6px solid #2e7d32;
+      border-radius: 8px;
+    }
+
+    .result p {
+      margin: 10px 0;
+    }
+
+    .result i {
+      margin-right: 8px;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>☀️ Solar Rooftop Calculator (India)</h2>
+
+  <label>Select State:</label>
+  <select id="state">
+    <option value="">-- Select State --</option>
+    <option>Andhra Pradesh</option>
+    <option>Assam</option>
+    <option>Bihar</option>
+    <option>Delhi</option>
+    <option>Gujarat</option>
+    <option>Karnataka</option>
+    <option>Maharashtra</option>
+    <option>Rajasthan</option>
+    <option>Tamil Nadu</option>
+    <option>Uttar Pradesh</option>
+    <!-- Add more states as needed -->
+  </select>
+
+  <label>Rooftop Area (10–500 sq.m): 
+    <span class="value" id="areaVal">100</span>
+  </label>
+  <input type="range" id="area" min="10" max="500" value="100" oninput="updateValue('area')">
+
+  <label>Panel Efficiency (10%–25%): 
+    <span class="value" id="efficiencyVal">18</span>%
+  </label>
+  <input type="range" id="efficiency" min="10" max="25" value="18" oninput="updateValue('efficiency')">
+
+  <label>Avg Sunlight Hours (2–10 hrs/day): 
+    <span class="value" id="sunlightVal">5</span>
+  </label>
+  <input type="range" id="sunlight" min="2" max="10" value="5" step="0.1" oninput="updateValue('sunlight')">
+
+  <label>Electricity Rate (₹2–₹12/kWh): 
+    <span class="value" id="rateVal">6</span>
+  </label>
+  <input type="range" id="rate" min="2" max="12" value="6" step="0.1" oninput="updateValue('rate')">
+
+  <label>Cost per kW (₹30,000–₹90,000): 
+    <span class="value" id="costVal">60000</span>
+  </label>
+  <input type="range" id="costPerKW" min="30000" max="90000" step="1000" value="60000" oninput="updateValue('costPerKW')">
+
+  <button onclick="calculateSolar()"><i class="fas fa-calculator"></i> Calculate</button>
+
+  <div class="result" id="output" style="display: none;"></div>
+
+  <script>
+    function updateValue(id) {
+      document.getElementById(id + 'Val').innerText = document.getElementById(id).value;
+    }
+
+    function calculateSolar() {
+      const area = parseFloat(document.getElementById('area').value);
+      const efficiency = parseFloat(document.getElementById('efficiency').value) / 100;
+      const sunlight = parseFloat(document.getElementById('sunlight').value);
+      const rate = parseFloat(document.getElementById('rate').value);
+      const costPerKW = parseFloat(document.getElementById('costPerKW').value);
+      const state = document.getElementById('state').value;
+
+      if (!state) {
+        alert('Please select a state.');
+        return;
+      }
+
+      const systemSizeKW = area * efficiency * 0.1; // 10 sq.m = 1kW at 100%
+      const monthlyGeneration = systemSizeKW * sunlight * 30;
+      const monthlySavings = monthlyGeneration * rate;
+      const systemCost = systemSizeKW * costPerKW;
+      const paybackPeriod = systemCost / (monthlySavings * 12);
+
+      const output = `
+        <p><i class="fas fa-map-marker-alt"></i><strong>State:</strong> ${state}</p>
+        <p><i class="fas fa-solar-panel"></i><strong>System Size:</strong> ${systemSizeKW.toFixed(2)} kW</p>
+        <p><i class="fas fa-bolt"></i><strong>Monthly Generation:</strong> ${monthlyGeneration.toFixed(0)} kWh</p>
+        <p><i class="fas fa-rupee-sign"></i><strong>Monthly Savings:</strong> ₹${monthlySavings.toFixed(0)}</p>
+        <p><i class="fas fa-wallet"></i><strong>Estimated Cost:</strong> ₹${systemCost.toFixed(0)}</p>
+        <p><i class="fas fa-hourglass-half"></i><strong>Payback Period:</strong> ${paybackPeriod.toFixed(1)} years</p>
+      `;
+
+      const outputDiv = document.getElementById('output');
+      outputDiv.innerHTML = output;
+      outputDiv.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
